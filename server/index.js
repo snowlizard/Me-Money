@@ -6,23 +6,15 @@ require('dotenv').config();
 
 app.use(express.json());
 
-app.get("/activities", async(req, res) => {
-    try {
-        const data = await pool.query('SELECT * FROM "Activities"');
-        res.json(data.rows);
-    } catch (error) {
-        res.send(error);
-    }
-});
-
 /**
  * Category
  */
-app.get('/category:id', async(req, res) => {
+app.get('/category/:id', async(req, res) => {
         try {
-            const category_id = req.body.category_id;
-            const data = await pool.query('SELECT * FROM category WHERE category_id = ($1)', [category_id]);
-            res.json(data.rows);
+            const category_id = req.params.id;
+            console.log("cat id " + category_id);
+            const data = await pool.query('SELECT * FROM category WHERE id = ($1);', [category_id]);
+            res.json(data.rows[0]);
         } catch (error) {
             console.log(error);
         }
@@ -44,20 +36,20 @@ app.get('/subcategories', async(req, res) => {
             console.log(error);
         }
 });
-app.put('/category:id', async(req, res) => {
+app.put('/category/:id', async(req, res) => {
         try {
-            const category = req.body.category;
-            const data = await pool.query('INSERT INTO category (category_id, name, parent) VALUES ($1, $2, $3)',
+            const category = req.params.id;
+            const data = await pool.query('INSERT INTO category (id, name, parent) VALUES ($1, $2, $3)',
                 [category.id, category.name, category.parent]);
             res.json(data.rows);
         } catch (error) {
             console.log(error);
         }
 });
-app.put('/category:id', async(req, res) => {
+app.put('/category/:category', async(req, res) => {
         try {
-            const category = req.body.category;
-            const data = await pool.query('UPDATE "Category" SET name = ($2), parent = ($3)  WHERE category_id = ($1)',
+            const category = req.params.category;
+            const data = await pool.query('UPDATE category SET name = ($2), parent = ($3)  WHERE id = ($1)',
                 [category.id, category.name, category.parent]
             );
             res.json(data.rows);
@@ -65,10 +57,10 @@ app.put('/category:id', async(req, res) => {
             console.log(error);
         }
 });
-app.delete('/category:id', async(req, res) => {
+app.delete('/category/:id', async(req, res) => {
         try {
-            const category_id = req.body.category_id;
-            const data = await pool.query('DELETE FROM "Category" WHERE category_id = ($1)', [category_id]);
+            const category_id = req.params.id;
+            const data = await pool.query('DELETE FROM category WHERE id = ($1)', [category_id]);
             res.json(data.rows);
         } catch (error) {
             console.log(error);
