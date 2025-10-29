@@ -11,8 +11,7 @@ app.get("/activities", async(req, res) => {
         const data = await pool.query('SELECT * FROM "Activities"');
         res.json(data.rows);
     } catch (error) {
-        console.log("BRUH" + error);
-        res.send("Error: something went wrong");
+        res.send(error);
     }
 });
 
@@ -22,7 +21,7 @@ app.get("/activities", async(req, res) => {
 app.get('/category:id', async(req, res) => {
         try {
             const category_id = req.body.category_id;
-            const data = await pool.query('SELECT * FROM "Category" WHERE category_id = ($1)', [category_id]);
+            const data = await pool.query('SELECT * FROM category WHERE category_id = ($1)', [category_id]);
             res.json(data.rows);
         } catch (error) {
             console.log(error);
@@ -30,16 +29,16 @@ app.get('/category:id', async(req, res) => {
 });
 app.get('/categories', async(req, res) => {
         try {
-            const data = await pool.query('SELECT * FROM "Category" WHERE parent IS NULL');
+            const data = await pool.query('SELECT * FROM category WHERE parent is NULL');
             res.json(data.rows);
         } catch (error) {
-        console.log("BRUH " + error);
-        res.send("Error: something went wrong");
+            console.log(error);
+            res.send(error);
         }
 });
 app.get('/subcategories', async(req, res) => {
         try {
-            const data = await pool.query('SELECT * FROM "Category" WHERE parent IS NOT NULL');
+            const data = await pool.query('SELECT * FROM category WHERE parent IS NOT NULL');
             res.json(data.rows);
         } catch (error) {
             console.log(error);
@@ -48,7 +47,7 @@ app.get('/subcategories', async(req, res) => {
 app.put('/category:id', async(req, res) => {
         try {
             const category = req.body.category;
-            const data = await pool.query('INSERT INTO "Category" (category_id, name, parent) VALUES ($1, $2, $3)',
+            const data = await pool.query('INSERT INTO category (category_id, name, parent) VALUES ($1, $2, $3)',
                 [category.id, category.name, category.parent]);
             res.json(data.rows);
         } catch (error) {
