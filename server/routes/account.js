@@ -54,7 +54,7 @@ router.put('/', async(req, res) => {
 router.delete('/:id', async(req, res) => {
     try {
         const account_id = req.params.id;
-        const data = await pool.query('DELETE * FROM account WHERE id = ($1);', [account_id]);
+        const data = await pool.query('DELETE FROM account WHERE id = ($1);', [account_id]);
         res.json(200);
     } catch (error) {
         console.log(error);
