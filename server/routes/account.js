@@ -27,7 +27,7 @@ router.post('/', async(req, res) => {
     try {
         const account = Object.values(req.body);
         const data = await pool.query('INSERT INTO account(name, balance, type) values($1, $2, $3);', account);
-        res.json(data.rows);
+        res.json(200);
     } catch (error) {
         console.log(error);
         res.send(error);
@@ -40,7 +40,7 @@ router.put('/', async(req, res) => {
 
         const account = Object.values(req.body);
         const data = await pool.query('UPDATE account' + query, account);
-        res.json(data.rows);
+        res.json(200);
     } catch (error) {
         console.log(error);
         res.send(error);
@@ -51,7 +51,7 @@ router.delete('/:id', async(req, res) => {
     try {
         const account_id = req.params.id;
         const data = await pool.query('DELETE * FROM account WHERE id = ($1);', [account_id]);
-        res.json(data.rows);
+        res.json(200);
     } catch (error) {
         console.log(error);
         res.send(error);
