@@ -4,7 +4,7 @@ const pool = require("../db");
 
 router.get('/all', async(req, res) => {
     try {
-        const data = await pool.query('SELECT * FROM category');
+        const data = await pool.query('SELECT * FROM category;');
         res.json(data.rows);
     } catch (error) {
         console.log(error);
@@ -14,7 +14,7 @@ router.get('/all', async(req, res) => {
 
 router.get('/categories', async(req, res) => {
     try {
-        const data = await pool.query('SELECT * FROM category WHERE parent is NULL');
+        const data = await pool.query('SELECT * FROM category WHERE parent is NULL;');
         res.json(data.rows);
     } catch (error) {
         console.log(error);
@@ -23,7 +23,7 @@ router.get('/categories', async(req, res) => {
 });
 router.get('/subcategories', async(req, res) => {
     try {
-        const data = await pool.query('SELECT * FROM category WHERE parent IS NOT NULL');
+        const data = await pool.query('SELECT * FROM category WHERE parent IS NOT NULL;');
         res.json(data.rows);
     } catch (error) {
         console.log(error);
@@ -43,9 +43,7 @@ router.get('/:id', async(req, res) => {
 router.post('/', async(req, res) => {
         try {
             const category = Object.values(req.body);
-            category.shift();
-            console.log(category)
-            const data = await pool.query('INSERT INTO category (name, parent) VALUES ($1, $2)', category);
+            const data = await pool.query('INSERT INTO category (name, parent) VALUES ($1, $2);', category);
             res.json(data.rows);
         } catch (error) {
             console.log(error);
@@ -53,9 +51,9 @@ router.post('/', async(req, res) => {
 });
 router.put('/', async(req, res) => {
         try {
-            const category = req.body;
-            const data = await pool.query('UPDATE category SET name = ($2), parent = ($3)  WHERE id = ($1)',
-                [category.id, category.name, category.parent]
+            const category = Object.values(req.body);
+            const data = await pool.query('UPDATE category SET name = ($2), parent = ($3)  WHERE id = ($1);',
+                category
             );
             res.json(data.rows);
         } catch (error) {
@@ -65,7 +63,7 @@ router.put('/', async(req, res) => {
 router.delete('/:id', async(req, res) => {
         try {
             const category_id = req.params.id;
-            const data = await pool.query('DELETE FROM category WHERE id = ($1)', [category_id]);
+            const data = await pool.query('DELETE FROM category WHERE id = ($1);', [category_id]);
             res.json(data.rows);
         } catch (error) {
             console.log(error);
