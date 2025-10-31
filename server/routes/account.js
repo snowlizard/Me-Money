@@ -16,7 +16,11 @@ router.get('/:id', async(req, res) => {
     try {
         const account_id = req.params.id;
         const data = await pool.query('SELECT * FROM account WHERE id = ($1);', [account_id]);
-        res.json(data.rows);
+        if(data.rowCount > 0){
+            res.json(data.rows[0]);
+        } else {
+            res.json(null);
+        }
     } catch (error) {
         console.log(error);
         res.send(error);
