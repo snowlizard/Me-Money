@@ -30,6 +30,7 @@ router.get('/:id', async(req, res) => {
 router.post('/', async(req, res) => {
     try {
         const account = Object.values(req.body);
+        account.shift();
         const data = await pool.query('INSERT INTO account(name, balance, type) values($1, $2, $3);', account);
         res.json(200);
     } catch (error) {

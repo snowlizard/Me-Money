@@ -45,6 +45,7 @@ router.get('/:id', async(req, res) => {
 router.post('/', async(req, res) => {
     try {
         const category = Object.values(req.body);
+        category.shift();
         const data = await pool.query('INSERT INTO category (name, parent) VALUES ($1, $2);', category);
         res.json(200);
     } catch (error) {
