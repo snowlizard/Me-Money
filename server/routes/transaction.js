@@ -131,3 +131,5 @@ const getTransaction = async (id) => {
         return null;
     }
 }
+
+module.exports = router;
