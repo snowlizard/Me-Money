@@ -45,7 +45,7 @@ router.post('/', async(req, res) => {
     try {
         const transaction = req.body;
         handleTransaction(transaction);
-        const values = Object.values(transaction);
+        const values = Object.values(transaction, 'new');
         values.shift();
         const data = await pool.query(`INSERT into transaction(description, source,
             destination, date, amount, category, subcategory, type) VALUES(
@@ -59,7 +59,7 @@ router.post('/', async(req, res) => {
 router.put('/', async(req, res) => {
     try {
         const transaction = req.body;
-        handleTransaction(transaction);
+        handleTransaction(transaction, 'update');
         const values = Object.values(transaction);
         const data = await pool.query(`UDATE transaction set description = ($2),
             source = ($3), destination = ($4), date = ($5), amount = ($6),
@@ -70,40 +70,64 @@ router.put('/', async(req, res) => {
     }
 });
 
-const handleTransaction = async (transaction) => {
-    const isUpdate = transaction.id != null ? true : false;
+router.delete('/', async(req, res) => {
+    try {
+        const transaction = req.body;
+        handleTransaction(transaction, 'delete');
+    } catch (error) {
+        res.send(error);
+    }
+});
+
+/**
+ * Apply database updates based on the type of transaction (withdrawal, transfer, revenue)
+ * and database action
+ * @param {Object} transaction 
+ * @param {string} type database action | new, update, delete
+ */
+const handleTransaction = async (transaction, type='new') => {
     let previous = null;
-    if(isUpdate){
+    if (type == 'update' || type == 'delete') {
         previous = getTransaction(transaction.id);
     }
 
     switch (transaction.type) {
         case 'withdrawal':
-            if(isUpdate && previous){
+            if (previous) {
                 updateAccountBalance(previous.amount, previous.source);
             }
-            let amount = transaction.amount * -1;
-            updateAccountBalance(amount, transaction.source);
+            if (type == 'new' || type == 'update') {
+                let amount = transaction.amount * -1;
+                updateAccountBalance(amount, transaction.source);
+            }
             break;
         case 'transfer':
-            if(isUpdate && previous){
+            if (previous) {
                 updateAccountBalance(previous.amount, previous.source);
                 updateAccountBalance(previous.amount * -1, previous.destination);
             }
-            updateAccountBalance(transaction.amount * -1, transaction.source);
-            updateAccountBalance(transaction.amount, transaction.destination);
+            if (type == 'new' || type == 'update') {
+                updateAccountBalance(transaction.amount * -1, transaction.source);
+                updateAccountBalance(transaction.amount, transaction.destination);
+            }
             break;
         case 'revenue':
-            if(isUpdate && previous){
+            if (previous) {
                 updateAccountBalance(previous.amount * -1, previous.destination);
             }
-            updateAccountBalance(transaction.amount, transaction.destination);
+            if (type == 'new' || type == 'update') {
+                updateAccountBalance(transaction.amount, transaction.destination);
+            }
             break;
+    }
+
+    if (type == 'delete') {
+        removeTransaction(transaction.id);
     }
 }
 
 /**
- * 
+ * Adds amount to the balance of the given account id
  * @param {integer} amount 
  * @param {integer} account_id 
  * @returns boolean
@@ -118,16 +142,29 @@ const updateAccountBalance = async (amount, account_id) => {
 }
 
 /**
- * 
+ * Returns transaction json object
  * @param {integer} id 
  * @returns transaction object
  */
 const getTransaction = async (id) => {
     try {
-        const id = req.params.id;
         const data = await pool.query('SELECT * FROM transaction WHERE id = ($1);', [id]);
         return data.rows[0];
     } catch (error) {;
+        return null;
+    }
+}
+
+/**
+ * Deletes a transaction
+ * @param {integer} id transaction id 
+ * @returns 
+ */
+const removeTransaction = async (id) => {
+    try {
+        const data = await pool.query('DELETE FROM transaction WHERE id = ($1);', [id]);
+        return 200;
+    } catch (error) {
         return null;
     }
 }
