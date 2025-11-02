@@ -5,6 +5,7 @@ const pool = require("./db");
 const category = require('./routes/category');
 const account = require('./routes/account');
 const transaction = require('./routes/transaction');
+const reports = require('./routes/reports');
 
 require('dotenv').config();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/category', category);
 app.use('/account', account);
 app.use('/transaction', transaction);
+app.use('/reports', reports);
 
 app.listen(5000, () => {
     console.log("Server is listening on port " + 5000);
