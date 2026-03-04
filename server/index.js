@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 
 const pool = require("./db");
@@ -10,6 +11,7 @@ const reports = require('./routes/reports');
 require('dotenv').config();
 
 app.use(express.json());
+app.use(cors({origin: "*"}));
 app.use('/category', category);
 app.use('/account', account);
 app.use('/transaction', transaction);
