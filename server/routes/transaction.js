@@ -14,7 +14,7 @@ router.get('/all', async(req, res) => {
 router.get('/current', async(req, res) => {
     try {
         const data = await pool.query(`
-            SELECT TO_CHAR(date, 'YYYY/MM/DD'), accnt.name as "source", dest.name as "destination", description, cat.name as "category", subcat.name as "subcategory", amount, transaction.type FROM "transaction"
+            SELECT TO_CHAR(date, 'YYYY/MM/DD') as "date", accnt.name as "source", dest.name as "destination", description, cat.name as "category", subcat.name as "subcategory", amount, transaction.type FROM "transaction"
             JOIN category cat ON cat.id = transaction.category
             JOIN category subcat ON subcat.id = transaction.subcategory
             LEFT JOIN account accnt ON accnt.id = source
