@@ -11,7 +11,7 @@ const reports = require('./routes/reports');
 require('dotenv').config();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: "*"}));
 app.use('/category', category);
 app.use('/account', account);
 app.use('/transaction', transaction);

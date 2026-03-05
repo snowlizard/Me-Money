@@ -11,6 +11,23 @@ router.get('/all', async(req, res) => {
     }
 });
 
+router.get('/current', async(req, res) => {
+    try {
+        const data = await pool.query(`
+            SELECT date, accnt.name as "source", dest.name as "destination", description, cat.name as "category", subcat.name as "subcategory", amount, transaction.type FROM "transaction"
+            JOIN category cat ON cat.id = transaction.category
+            JOIN category subcat ON subcat.id = transaction.subcategory
+            LEFT JOIN account accnt ON accnt.id = source
+            LEFT JOIN account dest ON dest.id = destination
+            WHERE EXTRACT(MONTH FROM transaction.date) = EXTRACT(MONTH FROM (CURRENT_TIMESTAMP))
+            AND EXTRACT(YEAR FROM transaction.date) = EXTRACT(YEAR FROM CURRENT_TIMESTAMP)
+            ORDER BY date, source, destination DESC;`);
+        res.json(data.rows);
+    } catch (error) {
+        res.send(error);
+    }
+});
+
 router.get('/source/:id', async(req, res) => {
     try {
         const id = req.params.id;
