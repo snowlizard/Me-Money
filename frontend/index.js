@@ -310,7 +310,13 @@ form.addEventListener("submit", (event) => {
         });
 
         const response = await data.json();
-        console.log(response);
+        alert(response);
+        description.value = "";
+        categoryObj.value = "";
+        subcategoryObj.value = "";
+        amount.value = "";
+        source.value = "";
+        destination.value = "";
     })();
     
 });
