@@ -6,8 +6,25 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <title>Me Money</title>
 </head>
-<body style="width: 100vw; height: 100vh;">
-    <div class="d-flex align-items-center justify-content-center" style="width: 100%; height: 100%;">
+<body>
+    <div class="container-fluid p-4">
+        <div class="row p-4">
+            <div class="col-md-6">
+                <label for="db_type">Operation</label>
+                <select id="db_type" class="form-select">
+                    <option value="update" selected>Update</option>
+                    <option value="insert">Insert</option>
+                    <option value="delete">Delete</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label for="transaction_id">ID</label>
+                <input class="form-control" type="text" id="transaction_id" disabled>
+            </div>
+
+            <button class="btn btn-primary col-md-2 mt-4" id="load_transaction" disabled>Load</button>
+        </div>
         <form id="form" class="row g-4 p-4">
                 <div class="col-md-3">
                     <label for="type">Type</label>
@@ -22,12 +39,6 @@
                     <label for="source">Source</label>
                     <select class="form-select" aria-label="Type" id="source">
                         <option value="">-- None --</option>
-                        <option value="1">American Express</option>
-                        <option value="2">Charles Schwab</option>
-                        <option value="3">Chase (Amazon)</option>
-                        <option value="4">Discover savings</option>
-                        <option value="5">Paypal</option>
-                        <option value="6">Schwab Savings</option>
                     </select>
                 </div>
 
@@ -35,28 +46,22 @@
                     <label for="destination">Destination</label>
                     <select class="form-select" aria-label="Type" id="destination">
                         <option value="">-- None --</option>
-                        <option value="1">American Express</option>
-                        <option value="2">Charles Schwab</option>
-                        <option value="3">Chase (Amazon)</option>
-                        <option value="4">Discover savings</option>
-                        <option value="5">Paypal</option>
-                        <option value="6">Schwab Savings</option>
                     </select>
                 </div>
 
                 <div class="col-md-3">
                     <label for="amount" class="form-label">Amount</label>
-                    <input type="text" class="form-control" id="amount" placeholder="1750.00">
+                    <input type="text" class="form-control" id="amount" placeholder="1750.00" required>
                 </div>
 
                 <div class="col-md-4">
                     <label for="date">Date</label>
-                    <input type="date" class="form-control" id="date">
+                    <input type="date" class="form-control" id="date" required>
                 </div>
 
                 <div class="col-md-4">
                     <label for="category">Category</label>
-                    <select class="form-select" aria-label="Type" id="category">
+                    <select class="form-select" aria-label="Type" id="category" required>
                     </select>
                 </div>
 
@@ -68,7 +73,7 @@
 
                 <div class="col-md-12">
                     <label for="description" class="form-label">Description</label>
-                    <input type="text" class="form-control" id="description" placeholder="Money for baby mama stuff">
+                    <input type="text" class="form-control" id="description" placeholder="What the transaction was for ex. rent" required>
                 </div>
                 
                 <div class="d-grid gap-2">
